@@ -89,7 +89,73 @@ Para dúvidas, consulte a documentação Swagger, GraphQL Playground ou o códig
 
 ## Testes K6
 
-- Foi realizado a criação dos testes com K6.
-- Para rodar os testes, deve estar dentro da pasta do arquivo e rodar o comando: K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_PERIOD=2s k6 run test-trabalho-extra.js
-- Para gerar o arquivo em .html, rodar o comando: K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=html-report.html K6_WEB_DASHBOARD_PERIOD=100ms k6 run test-trabalho-extra.js
+Comando para rodar os testes: k6 run transferencia.test.js e k6 run transferencia.test.js
+Comando geração arquivo .HTML para o teste arquivo transferencia.test.js: arquivo transferencia.test.js
 
+Arquivo arquivo login.test.js não gerou relatório .HTML pois rodou muito rápido e possui poucos dados.
+
+## Teste 1 – Cadastro, Login e Transferência - arquivo transferencia.test.js
+
+1 - Thresholds => Regras estabelecidas para avaliar a performance da requisição
+export const options = {
+thresholds: {
+http_req_duration: ["p(90)<=150"],
+},
+
+2 - Stages => Simula o comportamento do sistema quando possui aumento progressivo de carga
+stages: [
+{ duration: "3s", target: 5 },
+{ duration: "10s", target: 10 },
+{ duration: "15s", target: 20 },
+],
+
+3 - Helpers => Funções reutilizáveis
+import { getBaseUrl } from "./helpers/getBaseUrl.js";
+
+4 - Faker => Geração de dados dinâmicos
+import faker from "k6/x/faker";
+const remetente = `rem_${faker.person.firstName()}_${uniqueId}`;
+const destinatario = `dest_${faker.person.firstName()}_${uniqueId}`;
+const senha = faker.internet.password();
+
+5 - Groups => Organiza cada grupo de lógica das requisições
+group("Registrar usuário", () => { ... });
+group("Login usuário", () => { ... });
+group("Transferência entre usuários", () => { ... });
+
+6 - Checks => Para evitar falso positivo e validação do status esperado
+check(regRem, {
+"remetente criado (201)": (r) => r.status === 201,
+});
+
+check(res, {
+"login OK (200)": (r) => r.status === 200,
+"token recebido": (r) => !!r.json("token"),
+});
+
+7 - Reaproveitamento de Resposta => O token recuperado no login é reutilizado na transferência
+token = res.json("token");
+
+8 - Token de Autenticação => Validar a segurança e controle de acesso, Garante que apenas usuários autenticados realizem transferências
+headers: {
+"Content-Type": "application/json",
+Authorization: `Bearer ${token}`,
+}
+
+9 - Trends => Para medir o tempo de transferência
+const transferTrend = new Trend("transfer_duration");
+
+10 - Variável de Ambiente => Permite executar o mesmo teste em vários ambientes sem alterar código
+const url = getBaseUrl();
+
+## Teste 2 – Cadastro e Login - arquivo login.test.js (Data-Driven)
+
+11 - Data-Driven Testing => Dados con origem de arquivo externo JSON
+import { SharedArray } from "k6/data";
+
+const users = new SharedArray("users", function () {
+return JSON.parse(open("../data/login.data.json"));
+});
+
+12 - Controle de Distribuição de Dados => Cada \_VU é um usuário diferente, pode evitar concorrência nos mesmos dados
+const user = users[(__VU - 1) % users.length];

@@ -1,0 +1,21 @@
+[
+  { "username": "mike01@example.com", "password": "Pwd@12301" },
+  { "username": "lia01@example.com", "password": "Pwd@12302" },
+  { "username": "james01@example.com",  "password": "Pwd@12303" },
+
+  { "username": "mike02@example.com", "password": "Pwd@12304" },
+  { "username": "lia02@example.com", "password": "Pwd@12305" },
+  { "username": "james02@example.com",  "password": "Pwd@12306" },
+
+  { "username": "mike03@example.com", "password": "Pwd@12307" },
+  { "username": "lia03@example.com", "password": "Pwd@12308" },
+  { "username": "james03@example.com",  "password": "Pwd@12309" },
+
+  { "username": "mike04@example.com", "password": "Pwd@12310" },
+  { "username": "lia04@example.com", "password": "Pwd@12311" },
+  { "username": "james04@example.com",  "password": "Pwd@12312" },
+
+  { "username": "mike05@example.com", "password": "Pwd@12313" },
+  { "username": "lia05@example.com", "password": "Pwd@12314" },
+  { "username": "james05@example.com",  "password": "Pwd@12315" }
+]
