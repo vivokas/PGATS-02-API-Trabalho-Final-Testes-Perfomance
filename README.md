@@ -89,10 +89,12 @@ Para dúvidas, consulte a documentação Swagger, GraphQL Playground ou o códig
 
 ## Testes K6
 
-Comando para rodar os testes: k6 run transferencia.test.js e k6 run transferencia.test.js
-Comando geração arquivo .HTML para o teste arquivo transferencia.test.js: arquivo transferencia.test.js
+## Comando para rodar os testes
 
-Arquivo arquivo login.test.js não gerou relatório .HTML pois rodou muito rápido e possui poucos dados.
+Comando para rodar os testes de login: k6 run login.test.js
+Comando para rodar os testes de transferencia: k6 run transferencia.test.js
+Comando geração arquivo .HTML para o teste arquivo transferencia.test.js: K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=html-report-transferencia.html k6 run transferencia.test.js
+Comando geração arquivo .HTML para o teste arquivo login.test.js: K6_WEB_DASHBOARD=true K6_WEB_DASHBOARD_EXPORT=html-report-login.html k6 run login.test.js
 
 ## Teste 1 – Cadastro, Login e Transferência - arquivo transferencia.test.js
 
